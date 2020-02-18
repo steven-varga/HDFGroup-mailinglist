@@ -1,7 +1,7 @@
 ## problem: H5Pset_sizes(fcpl_id, offset, length) crashes
 **HDF5 Version:** 1.10.6
 
-When either of the values take on value `16` HDF5 10.
+When either of the values take on value `16` library crashes, tested against  HDF5 1.10.6, others maybe affected
 ```
 size_t offset[] = {2,4,8,16};
 size_t length[] = {2,4,8,16};
