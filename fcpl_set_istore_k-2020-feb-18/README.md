@@ -28,11 +28,21 @@ int main() {
 ```
 cc main.c -lhdf5  -lz -ldl -lm -o set_istore_k	
 ./set_istore_k
+results: 32 - 32 = 0 
+results: 64 - 64 = 0 
+results: 128 - 128 = 0 
+results: 256 - 256 = 0 
+results: 512 - 512 = 0 
+results: 1024 - 1024 = 0 
+results: 2048 - 2048 = 0 
+results: 4096 - 4096 = 0 
+results: 8192 - 8192 = 0 
+results: 16384 - 16384 = 0 
 HDF5-DIAG: Error detected in HDF5 (1.10.6) thread 0:
   #000: H5Pfcpl.c line 645 in H5Pset_istore_k(): istore IK value exceeds maximum B-tree entries
     major: Invalid arguments to routine
     minor: Bad value
-results: 32 - 32 = 0 results: 64 - 64 = 0 results: 128 - 128 = 0 results: 256 - 256 = 0 results: 512 - 512 = 0 results: 1024 - 1024 = 0 results: 2048 - 2048 = 0 results: 4096 - 4096 = 0 results: 8192 - 8192 = 0 results: 16384 - 16384 = 0 results: 32768 - 32 = 32736
+results: 32768 - 32 = 32736
 ```
 
 adjusting the documentation may be a possible fix

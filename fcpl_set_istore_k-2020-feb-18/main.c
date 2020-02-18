@@ -21,7 +21,7 @@ The HDF5 library uses (ik*2) as the maximum # of entries before splitting a B-tr
 		err = H5Pset_istore_k(fcpl_id, i);
 		fd_id = H5Fcreate( name, H5F_ACC_TRUNC, fcpl_id, H5P_DEFAULT );
 		H5Pget_istore_k(fcpl_id, &ik );
-		printf("results: %i - %i = %i ", i, ik, i - ik);
+		printf("results: %i - %i = %i \n", i, ik, i - ik);
 
 		H5Pclose(fcpl_id);
 		H5Fclose(fd_id);
