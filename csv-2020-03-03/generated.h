@@ -1,14 +1,14 @@
 /* Copyright (c) 2018 vargaconsulting, Toronto,ON Canada
  *     Author: Varga, Steven <steven@vargaconsulting.ca>
  */
-#ifndef H5CPP_GUARD_mzMuQ
-#define H5CPP_GUARD_mzMuQ
+#ifndef H5CPP_GUARD_EziSI
+#define H5CPP_GUARD_EziSI
 
 namespace h5{
     //template specialization of input_t to create HDF5 COMPOUND type
     template<> hid_t inline register_struct<input_t>(){
-        //hsize_t at_00_[] ={20};            hid_t at_00 = H5Tarray_create(H5T_STRING,20,at_00_);
-		hid_t at_00 = H5Tcopy (H5T_C_S1); H5Tset_size(at_00, 20);
+        hsize_t at_00_[] ={20};            hid_t at_00 = H5Tarray_create(H5T_NATIVE_CHAR,1,at_00_);
+
         hid_t ct_00 = H5Tcreate(H5T_COMPOUND, sizeof (input_t));
         H5Tinsert(ct_00, "MasterRecordNumber",	HOFFSET(input_t,MasterRecordNumber),H5T_NATIVE_LONG);
         H5Tinsert(ct_00, "Hour",	HOFFSET(input_t,Hour),H5T_NATIVE_UINT);

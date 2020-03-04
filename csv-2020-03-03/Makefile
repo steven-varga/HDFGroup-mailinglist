@@ -13,7 +13,7 @@ test: csv2hdf5
 	./csv2hdf5
 
 generated.h: csv2hdf5.cpp
-#	h5cpp csv2hdf5.cpp -- $(CXXFLAGS) $(INCLUDES) -Dgenerated.h
+	h5cpp csv2hdf5.cpp -- $(CXXFLAGS) $(INCLUDES) -Dgenerated.h
 
 csv2hdf5.o : csv2hdf5.cpp generated.h 
 	$(CXX) $(INCLUDES) -o csv2hdf5.o  $(CXXFLAGS) -c csv2hdf5.cpp

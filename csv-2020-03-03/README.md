@@ -72,7 +72,7 @@ H5CPP_REGISTER_STRUCT(input_t);
 #endif
 ```
 
-The entire project can be [downloaded from this link]() but for completeness here is the source file:
+The entire project can be [downloaded from this link](https://github.com/steven-varga/HDFGroup-mailinglist/tree/master/csv-2020-03-03) but for completeness here is the source file:
 ```
 #include "csv.h"
 #include "struct.h"
