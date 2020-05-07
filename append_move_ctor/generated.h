@@ -1,8 +1,8 @@
 /* Copyright (c) 2018 vargaconsulting, Toronto,ON Canada
  *     Author: Varga, Steven <steven@vargaconsulting.ca>
  */
-#ifndef H5CPP_GUARD_ZlLSe
-#define H5CPP_GUARD_ZlLSe
+#ifndef H5CPP_GUARD_wRUwW
+#define H5CPP_GUARD_wRUwW
 
 namespace h5{
     //template specialization of sn::log to create HDF5 COMPOUND type
