@@ -30,6 +30,7 @@ h5dump: Version 1.10.6`
 ```
 
 `make` does all the steps, here is the result:
+
 ```
 h5dump  example.h5 
 HDF5 "example.h5" {
@@ -62,4 +63,4 @@ GROUP "/" {
 }
 ```
 
-**all check out** h5cpp works with `llvm 11.0.0`
+**all checks out** h5cpp works with `llvm 11.0.0`
