@@ -68,15 +68,15 @@ int main(int argc, char **argv) {
         // we are using H5CPP in mixed mode, this brings clarity, RAII, error handling mechanism, ... 
         h5::fd_t fd_i = h5::open(input, H5F_ACC_RDONLY);  // be least intrusive, most relaxed
 	    h5::fd_t fd_o = h5::create(output, H5F_ACC_TRUNC);
-        h5::gr_t dgr{H5I_UNINIT}, sgr = h5::gr_t{H5Gopen(fd_i, source.data(), H5P_DEFAULT)};
+        h5::gr_t gr_d{H5I_UNINIT}, gr_s = h5::gr_t{H5Gopen(fd_i, source.data(), H5P_DEFAULT)};
         h5::mute();
-        if( destination != "/" ){
+        if( destination != "/" ) {
             char * gname = destination.data();
-            dgr = H5Lexists( fd_o, gname, H5P_DEFAULT) >= 0 ?
+            gr_d = H5Lexists( fd_o, gname, H5P_DEFAULT) >= 0 ?
                 h5::gr_t{H5Gcreate(fd_o, gname, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT)} : h5::gr_t{H5Gopen(fd_i, gname, H5P_DEFAULT)};
-            H5Ovisit(sgr, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, ocpy_callback, &dgr );
+            H5Ovisit(gr_s, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, ocpy_callback, &gr_d );
         } else // target is the root directory, use the `h5::fd_t` descriptor 
-            H5Ovisit(sgr, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, ocpy_callback, &fd_o );
+            H5Ovisit(gr_s, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, ocpy_callback, &fd_o );
         h5::unmute();
     } catch ( const h5::error::any& e ) {
         std::cerr << e.what() << std::endl;
