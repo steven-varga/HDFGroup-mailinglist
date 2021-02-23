@@ -1,7 +1,29 @@
 # **hdf5 object copy**
 copies a tree of objects from one hdf5 into another. To generate random input please [check out this project](https://github.com/steven-varga/h5rnd)
 
-## based on visitor pattern
+## `ocpyr` based on visitor pattern
+```
+PROFILE: interrupts/evictions/bytes = 4108/267/262272
+13.06user 28.55system 1:10.93elapsed 58%CPU (0avgtext+0avgdata 47216maxresident)k
+51640800inputs+51457216outputs (20major+10409minor)pagefaults 0swaps
+ls -lh  /tmp/remove-me-ocpyr.h5
+```
+
+**size:25GB !!!**  NOTICE: **Unaccounted space: 13 554 923 980 bytes**
+```
+-rw-rw-r-- 1 steven steven 25G Feb 23 13:16 /tmp/remove-me-ocpyr.h5
+Filename: remove-me-ocpyr.h5
+File information
+	# of unique groups: 1036
+	# of unique datasets: 6183
+ ...
+  Summary of file space information:
+  File metadata: 1304188 bytes
+  Raw data: 12787551200 bytes
+  Amount/Percent of tracked free space: 0 bytes/0.0%
+  Unaccounted space: 13554923980 bytes
+Total space: 26343779368 bytes
+```
 
 
 ```
@@ -31,17 +53,47 @@ typedef struct H5O_info1_t {
     } meta_size;
 }
 */
-
 ```
 
-## [property list](http://sandbox.h5cpp.org/architecture/#object-copy-property-list) manipulation
+![profile for recursive version](images/ocpyr-cachegrind.png)
+
+
+
+## `ocpyp`  [property list](http://sandbox.h5cpp.org/architecture/#object-copy-property-list) manipulation 
+
 ```
 auto ocpl = h5::shallow_hierarchy | h5::expand_soft_link | h5::expand_ext_link |
     h5::expand_reference | h5::copy_without_attr | h5::merge_commited_dtype;
 ```
+runtime: 
+```
+PROFILE: interrupts/evictions/bytes = 1968/353/133552
+6.35user 13.65system 0:35.32elapsed 56%CPU (0avgtext+0avgdata 46436maxresident)k
+25894592inputs+25728584outputs (20major+10244minor)pagefaults 0swaps
+ls -lh  /tmp/remove-me-ocpyp.h5
+```
+**size:13GB**  NOTICE: **Unaccounted space: 383 039 260 bytes**
+```
+-rw-rw-r-- 1 steven steven 13G Feb 23 13:11 /tmp/remove-me-ocpyp.h5
+Filename: remove-me-ocpyp.h5
+File information
+	# of unique groups: 1036
+	# of unique datasets: 6183
+    ...
+Summary of file space information:
+  File metadata: 1302420 bytes
+  Raw data: 12787551200 bytes
+  Amount/Percent of tracked free space: 0 bytes/0.0%
+  Unaccounted space: 383039260 bytes
+Total space: 13171892880 bytes
+
+```
+![profile for prop version](images/ocpyp-cachegrind.png)
 
 
-![example input](original.svg)
+
+
+![example input](images/original.svg)
 
 # requirements:
 

@@ -1,7 +1,7 @@
 /*
 steven varga, 2021, feb 22, Toronto, ON, Canada;  MIT license
 */
-
+#include <gperftools/profiler.h>
 #include "argparse.h"
 #include <h5cpp/all>
 #include <string>
@@ -20,9 +20,12 @@ int main(int argc, char **argv) {
         h5::fd_t fd_i = h5::open(arg.get<std::string>("--input"), H5F_ACC_RDONLY);  // be least intrusive, most relaxed
 	    h5::fd_t fd_o = h5::create(arg.get<std::string>("--output"), H5F_ACC_TRUNC);
         h5::ocpl_t ocpl = h5::expand_soft_link | h5::expand_ext_link;
-        
+ 
+        ProfilerStart( (std::string(argv[0]) + std::string(".prof")).data() );
         if(H5Ocopy(fd_i, arg.get<std::string>("--source").data(), 
             fd_o, arg.get<std::string>("--destination").data(), ocpl, h5::lcpl) < 0) throw std::runtime_error("copy error");
+        ProfilerStop();
+
     } catch ( const h5::error::any& e ) {
         std::cerr << e.what() << std::endl;
         std::cout << arg;

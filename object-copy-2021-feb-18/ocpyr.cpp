@@ -2,6 +2,7 @@
 steven varga, 2021, feb 22, Toronto, ON, Canada;  MIT license
 */
 
+#include <gperftools/profiler.h>
 #include "argparse.h"
 #include <h5cpp/all>
 #include <string>
@@ -70,6 +71,8 @@ int main(int argc, char **argv) {
 	    h5::fd_t fd_o = h5::create(output, H5F_ACC_TRUNC);
         h5::gr_t gr_d{H5I_UNINIT}, gr_s = h5::gr_t{H5Gopen(fd_i, source.data(), H5P_DEFAULT)};
         h5::mute();
+
+        ProfilerStart( (std::string(argv[0]) + std::string(".prof")).data() );
         if( destination != "/" ) {
             char * gname = destination.data();
             gr_d = H5Lexists( fd_o, gname, H5P_DEFAULT) >= 0 ?
@@ -77,6 +80,8 @@ int main(int argc, char **argv) {
             H5Ovisit(gr_s, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, ocpy_callback, &gr_d );
         } else // target is the root directory, use the `h5::fd_t` descriptor 
             H5Ovisit(gr_s, H5_INDEX_CRT_ORDER, H5_ITER_NATIVE, ocpy_callback, &fd_o );
+        ProfilerStop();
+
         h5::unmute();
     } catch ( const h5::error::any& e ) {
         std::cerr << e.what() << std::endl;
