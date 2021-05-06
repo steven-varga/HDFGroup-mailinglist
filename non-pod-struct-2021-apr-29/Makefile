@@ -34,7 +34,7 @@ generated.h: non-pod-struct.hpp
 
 %-test: %-test.o 
 	$(CXX) $^ $(LIBS) -o $@
-	./$@ -e csv benchmakr.csv -q
+	taskset 0x1 ./$@
 
 %-bench: %-bench.o 
 	$(CXX) $^ $(LIBS) -o $@
