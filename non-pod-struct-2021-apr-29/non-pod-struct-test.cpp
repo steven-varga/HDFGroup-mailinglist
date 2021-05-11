@@ -6,12 +6,13 @@
 #include "non-pod-struct.hpp"
 #include <h5cpp/io>
 #include <fmt/core.h>
+#include <fstream>
 
 namespace bh = h5::bench;
 bh::arg_x record_size{10'000, 100'000};
 bh::warmup warmup{0};
 bh::sample sample{1};
-h5::chunk chunk{4096};
+h5::dcpl_t chunk_size = h5::chunk{4096};
 
 std::vector<size_t> get_transfer_size(const std::vector<std::string>& strings ){
     std::vector<size_t> transfer_size;
@@ -44,7 +45,7 @@ std::vector<h5::ds_t> get_datasets(const h5::fd_t& fd, const std::string& name, 
     std::vector<h5::ds_t> ds;
 
     for(size_t i=0; i< rs.rank; i++)
-        ds.push_back( h5::create<std::string>(fd, fmt::format(name + "-{:010d}", rs[i]), h5::current_dims{rs[i]}, chunk));
+        ds.push_back( h5::create<std::string>(fd, fmt::format(name + "-{:010d}", rs[i]), h5::current_dims{rs[i]}, chunk_size));
     
     return ds;
 }
@@ -61,7 +62,7 @@ int main(int argc, const char **argv){
     fmt::print("\n\n");
 
     { // POD: FIXED LENGTH STRING + ID
-        h5::pt_t ds = h5::create<shim::pod_t>(fd, "FLstring h5::append<pod_t>", h5::max_dims{H5S_UNLIMITED}, chunk);
+        h5::pt_t ds = h5::create<shim::pod_t>(fd, "FLstring h5::append<pod_t>", h5::max_dims{H5S_UNLIMITED}, chunk_size);
         std::vector<shim::pod_t> data(max_size);
         // we have to copy the string into the pos struct
         for (size_t i = 0; i < data.size(); i++)
@@ -83,7 +84,7 @@ int main(int argc, const char **argv){
     }
 
     { // VL STRING, INDEXED BY HDF5 B+TREE, h5::append<std::string>
-        h5::pt_t ds = h5::create<std::string>(fd, "VLstring h5::append<std::vector<std::string>> ", h5::max_dims{H5S_UNLIMITED}, chunk);
+        h5::pt_t ds = h5::create<std::string>(fd, "VLstring h5::append<std::vector<std::string>> ", h5::max_dims{H5S_UNLIMITED}, chunk_size);
         std::vector<size_t> transfer_size = get_transfer_size(strings);
         // actual measurement with burn in phase
         bh::throughput(
@@ -133,14 +134,13 @@ int main(int argc, const char **argv){
         H5Tset_cset(dt, H5T_CSET_UTF8); 
         std::vector<h5::ds_t> ds;
         std::vector<h5::sp_t> file_space;
-        h5::dcpl_t dcpl = chunk;
 
         for(size_t i=0; i < record_size.rank; i++){
             hsize_t size = record_size[i];
             auto name = fmt::format("FLstring CAPI-{:010d}", size);
             h5::sp_t file_space = H5Screate_simple(1, &size, nullptr );
             ds.push_back(h5::ds_t{
-                H5Dcreate2(fd, name.data(), dt, file_space, h5::default_lcpl, dcpl, h5::default_dapl)
+                H5Dcreate2(fd, name.data(), dt, file_space, h5::default_lcpl, chunk_size, h5::default_dapl)
             });
         } 
     
@@ -168,14 +168,13 @@ int main(int argc, const char **argv){
         // modify VL type to fixed length
         h5::dt_t<char *> dt;
         std::vector<h5::ds_t> ds;
-        h5::dcpl_t dcpl = chunk;
 
         for(size_t i=0; i < record_size.rank; i++){
             hsize_t size = record_size[i];
             auto name = fmt::format("VLstring CAPI-{:010d}", size);
             h5::sp_t file_space = H5Screate_simple(1, &size, nullptr );
             ds.push_back(h5::ds_t{
-                H5Dcreate2(fd, name.data(), dt, file_space, h5::default_lcpl, dcpl, h5::default_dapl)
+                H5Dcreate2(fd, name.data(), dt, file_space, h5::default_lcpl, chunk_size, h5::default_dapl)
             });
         } 
     
@@ -194,6 +193,21 @@ int main(int argc, const char **argv){
                 H5Dwrite( ds[idx], dt, mem_space, file_space, H5P_DEFAULT, data.data());
                 return transfer_size[idx];
             });
+    }
+    { // C++ IO stream
+        std::vector<size_t> transfer_size = get_transfer_size(strings);
+        std::ofstream stream;
+        stream.open("somefile.txt", std::ios::out);
+    
+        // actual measurement
+        bh::throughput(
+            bh::name{"C++ IOstream "}, record_size, warmup, sample,
+            [&](size_t idx, size_t size) -> double {
+                for (size_t k = 0; k < size; k++)
+                    stream << strings[k] << std::endl;
+                return transfer_size[idx];
+            });
+        stream.close();
     }
 }
 
