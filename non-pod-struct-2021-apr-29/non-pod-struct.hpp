@@ -16,7 +16,7 @@
 // in some later version h5cpp compiler will do this for you
 namespace shim {
 	struct pod_t {
-        using max_lenght = std::integral_constant<size_t,100>;
+        using max_lenght = std::integral_constant<size_t,20>;
         size_t id;
         char name[max_lenght::value];
     };
