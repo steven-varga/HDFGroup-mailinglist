@@ -120,10 +120,10 @@ namespace h5::bench {
             store_t() : file_name("benchmark.h5"), dataset_name("/report"){
             }
             ~store_t(){
-                fmt::print("[name                                    ][total events][Mi events/s] [ms runtime / stddev] [    MiB/s / stddev ]\n");
+                fmt::print("[name                                              ][total events][Mi events/s] [ms runtime / stddev] [    MiB/s / stddev ]\n");
 
                 for(auto i: list)
-                    fmt::print("{:<42} {:>12} {:>12.4f}  {:>11.2f}  {:>8.3f} {:>10.2f}   {:>7.1f}\n",
+                    fmt::print("{:<52} {:>12} {:>12.4f}  {:>11.2f}  {:>8.3f} {:>10.2f}   {:>7.1f}\n",
                     i.name, i.x, i.x / i.mean_runtime, i.mean_runtime/1000.0, i.std_runtime/1000.0, i.mean_throughput, i.std_throughput);
             }
             std::string file_name, dataset_name;

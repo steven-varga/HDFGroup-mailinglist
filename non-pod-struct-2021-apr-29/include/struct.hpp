@@ -4,7 +4,7 @@
 
 namespace h5::bench {
     struct test_t {
-        using max_lenght = std::integral_constant<size_t,40>;
+        using max_lenght = std::integral_constant<size_t,60>;
         uint16_t warmup;
         uint16_t iteration;
         uint64_t x;
