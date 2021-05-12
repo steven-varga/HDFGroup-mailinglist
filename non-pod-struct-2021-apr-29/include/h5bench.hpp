@@ -140,7 +140,7 @@ namespace h5::bench {
     template <class... args_t>
     static void throughput(args_t... args) {
 
-        using callback_t = std::function<long double(size_t, size_t)>;
+        using callback_t = std::function<long double(hsize_t, hsize_t)>;
 
         using name_t = typename arg::tpos<impl::tag::name_t, args_t...>;
         using x_t = typename arg::tpos<impl::tag::x_t, args_t...>;
@@ -168,10 +168,10 @@ namespace h5::bench {
         if constexpr( callback_f::present ){
             callback_t fn = std::get<callback_f::position>(tuple);
             // warm up phase
-            for(size_t j=0; j<x.rank; j++){
-                for(size_t i=0; i<wu.value; i++) auto ignore = fn( j, x[j] );
+            for(hsize_t j=0; j<x.rank; j++){
+                for(hsize_t i=0; i<wu.value; i++) auto ignore = fn( j, x[j] );
                 time.clear(); throughput.clear();
-                for(size_t i=0; i<su.value; i++) {
+                for(hsize_t i=0; i<su.value; i++) {
                     namespace cl = std::chrono;
                     if constexpr (pt_t::present){
                         h5::pt_t pt = std::get<pt_t::position>(tuple);
