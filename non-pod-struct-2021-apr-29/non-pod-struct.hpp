@@ -48,8 +48,8 @@ namespace h5 {
     //template specialization of shim::pod_t to create HDF5 COMPOUND type
     template<> hid_t inline register_struct<shim::pod_t>(){
         hid_t at_00 = H5Tcopy(H5T_C_S1);
-        //H5Tset_size(at_00, ::shim::pod_t::max_lenght::value);
-        H5Tset_size(at_00, H5T_VARIABLE);
+        H5Tset_size(at_00, ::shim::pod_t::max_lenght::value);
+        //H5Tset_size(at_00, H5T_VARIABLE);
 
         hid_t ct_00 = H5Tcreate(H5T_COMPOUND, sizeof (shim::pod_t));
         H5Tinsert(ct_00, "id",	HOFFSET(shim::pod_t,id), H5T_NATIVE_ULONG);

@@ -9,9 +9,9 @@
 #include <fstream>
 
 namespace bh = h5::bench;
-bh::arg_x record_size{10'000, 100'000};
-bh::warmup warmup{0};
-bh::sample sample{1};
+bh::arg_x record_size{10'000}; //, 100'000, 1'000'000};
+bh::warmup warmup{3};
+bh::sample sample{10};
 h5::dcpl_t chunk_size = h5::chunk{4096};
 
 std::vector<size_t> get_transfer_size(const std::vector<std::string>& strings ){
@@ -76,8 +76,8 @@ int main(int argc, const char **argv){
         // actual measurement with burn in phase
         bh::throughput(
             bh::name{"FLstring h5::append<pod_t>"}, record_size, warmup, sample, ds,
-            [&](size_t idx, size_t size) -> double {
-                for (size_t k = 0; k < size; k++)
+            [&](hsize_t idx, hsize_t size) -> double {
+                for (hsize_t k = 0; k < size; k++)
                     h5::append(ds, data[k]);
                 return transfer_size[idx];
             });
@@ -89,8 +89,8 @@ int main(int argc, const char **argv){
         // actual measurement with burn in phase
         bh::throughput(
             bh::name{"VLstring h5::append<std::vector<std::string>>"}, record_size, warmup, sample,
-            [&](size_t idx, size_t size) -> double {
-                for (size_t i = 0; i < size; i++)
+            [&](hsize_t idx, hsize_t size) -> double {
+                for (hsize_t i = 0; i < size; i++)
                     h5::append(ds, strings[i]);
                 return transfer_size[idx];
             });
@@ -103,7 +103,7 @@ int main(int argc, const char **argv){
         // actual measurement with burn in phase
         bh::throughput(
             bh::name{"VLstring h5::write<std::vector<const char*>>"}, record_size, warmup, sample,
-            [&](size_t idx, size_t size) -> double {
+            [&](hsize_t idx, hsize_t size) -> double {
                 h5::write(ds[idx], data.data(), h5::count{size});
                 return transfer_size[idx];
             });
@@ -115,40 +115,33 @@ int main(int argc, const char **argv){
         // actual measurement with burn in phase
         bh::throughput(
             bh::name{"VLstring std::vector<std::string>"}, record_size, warmup, sample,
-            [&](size_t idx, size_t size) -> double {
+            [&](hsize_t idx, hsize_t size) -> double {
                 h5::write(ds[idx], strings, h5::count{size});
                 return transfer_size[idx];
             });
     }
 
     { // FL STRING, INDEXED BY HDF5 B+TREE std::vector<std::string>
-        using FL_t = char[shim::pod_t::max_lenght::value]; // type alias
+        using fixed_t = char[shim::pod_t::max_lenght::value]; // type alias
 
         std::vector<size_t> transfer_size;
         for (auto i : record_size)
-            transfer_size.push_back(i * sizeof(FL_t));
-        std::vector<FL_t> data = convert<FL_t>(strings);
+            transfer_size.push_back(i * sizeof(fixed_t));
+        std::vector<fixed_t> data = convert<fixed_t>(strings);
         
         // modify VL type to fixed length
-        h5::dt_t<FL_t> dt{H5Tcreate(H5T_STRING, sizeof(FL_t))};
+        h5::dt_t<fixed_t> dt{H5Tcreate(H5T_STRING, sizeof(fixed_t))};
         H5Tset_cset(dt, H5T_CSET_UTF8); 
-        std::vector<h5::ds_t> ds;
-        std::vector<h5::sp_t> file_space;
 
-        for(size_t i=0; i < record_size.rank; i++){
-            hsize_t size = record_size[i];
-            auto name = fmt::format("FLstring CAPI-{:010d}", size);
-            h5::sp_t file_space = H5Screate_simple(1, &size, nullptr );
-            ds.push_back(h5::ds_t{
-                H5Dcreate2(fd, name.data(), dt, file_space, h5::default_lcpl, chunk_size, h5::default_dapl)
-            });
-        } 
-    
+        std::vector<h5::ds_t> ds;
+        for(auto size: record_size) ds.push_back(
+                h5::create<fixed_t>(fd, fmt::format("FLstring CAPI-{:010d}", size), 
+                chunk_size, h5::current_dims{size}, dt));
+        
         // actual measurement
         bh::throughput(
             bh::name{"FLstring CAPI"}, record_size, warmup, sample,
-            [&](size_t idx, size_t size_) -> double {
-                hsize_t size = size_;
+            [&](hsize_t idx, hsize_t size) -> double {
                 // memory space
                 h5::sp_t mem_space{H5Screate_simple(1, &size, nullptr )};
                 H5Sselect_all(mem_space);
@@ -165,24 +158,17 @@ int main(int argc, const char **argv){
         std::vector<size_t> transfer_size = get_transfer_size(strings);
         std::vector<const char*> data = get_data(strings);
 
-        // modify VL type to fixed length
-        h5::dt_t<char *> dt;
+        h5::dt_t<char*> dt;
         std::vector<h5::ds_t> ds;
 
-        for(size_t i=0; i < record_size.rank; i++){
-            hsize_t size = record_size[i];
-            auto name = fmt::format("VLstring CAPI-{:010d}", size);
-            h5::sp_t file_space = H5Screate_simple(1, &size, nullptr );
-            ds.push_back(h5::ds_t{
-                H5Dcreate2(fd, name.data(), dt, file_space, h5::default_lcpl, chunk_size, h5::default_dapl)
-            });
-        } 
-    
+        for(auto size: record_size) ds.push_back(
+            h5::create<char*>(fd, fmt::format("VLstring CAPI-{:010d}", size), 
+            chunk_size, h5::current_dims{size}));
+
         // actual measurement
         bh::throughput(
             bh::name{"VLstring CAPI"}, record_size, warmup, sample,
-            [&](size_t idx, size_t size_) -> double {
-                hsize_t size = size_;
+            [&](hsize_t idx, hsize_t size) -> double {
                 // memory space
                 h5::sp_t mem_space{H5Screate_simple(1, &size, nullptr )};
                 H5Sselect_all(mem_space);
@@ -194,6 +180,7 @@ int main(int argc, const char **argv){
                 return transfer_size[idx];
             });
     }
+    
     { // C++ IO stream
         std::vector<size_t> transfer_size = get_transfer_size(strings);
         std::ofstream stream;
@@ -202,8 +189,8 @@ int main(int argc, const char **argv){
         // actual measurement
         bh::throughput(
             bh::name{"C++ IOstream "}, record_size, warmup, sample,
-            [&](size_t idx, size_t size) -> double {
-                for (size_t k = 0; k < size; k++)
+            [&](hsize_t idx, hsize_t size) -> double {
+                for (hsize_t k = 0; k < size; k++)
                     stream << strings[k] << std::endl;
                 return transfer_size[idx];
             });
