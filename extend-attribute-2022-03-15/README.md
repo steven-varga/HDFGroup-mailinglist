@@ -1,4 +1,5 @@
-# Can you extend attributes in HDF5?
+# [Example to rewrite attributes](https://github.com/steven-varga/HDFGroup-mailinglist/tree/master/extend-attribute-2022-03-15)
+
 While it is not possible to append/extend attributes in HDF5, attributes often represent side band information with relatevily small size. In fact in previous HDF5 versions the attribute size was limited to 64kb, however Gerd Heber suggest [this limitation has been lifted](https://forum.hdfgroup.org/t/extent-the-dataspace-of-an-existing-attribute/9464/6?u=steven). 
 
 Haveing said the above it is a good strategy to break up `append` operation to `read old dataset` and `write new dataset` operations. The implementation is straightforward, and when used properly also is performant.
@@ -32,7 +33,7 @@ ATTRIBUTE "attribute_name" {
 }
 }
 ```
-To updata the attribute you need to remove it first, since H5CPP doesn't yet do this automatically; in fact there is no `h5::adelete` either! -- however by design you can interchange HDF5 C API calls with H5CPP templates, so here is the update:
+To update the attribute you need to remove it first, since H5CPP doesn't yet do this automatically; in fact there is no `h5::adelete` either! -- however by design you can interchange HDF5 C API calls with H5CPP templates, so here is the update with [H5Adelete](https://portal.hdfgroup.org/display/HDF5/H5A_DELETE) and [`h5::awrite`](http://sandbox.h5cpp.org/architecture/#attributes): 
 
 ```
 H5Adelete(ds,  "attribute name");
