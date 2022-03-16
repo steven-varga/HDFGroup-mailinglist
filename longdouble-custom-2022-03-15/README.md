@@ -1,6 +1,6 @@
 # Long Double with custom datatype
 
-There are two implementations provided, one with sustom float types, whereas a nopaque dataype. None of the implementations handles architecture specific details. Please ADAPT the code snipett to your needs:
+There are two implementations provided, one with sustom float types, whereas an opaque dataype. None of the implementations handles architecture specific details. Please ADAPT the code snipet to your needs:
 
 
 ```
@@ -20,9 +20,6 @@ namespace h5::impl::detail {
 		/*	see: https://en.wikipedia.org/wiki/Extended_precision#x86_extended_precision_format*/
 	};
 }
-
-// END H5CPP SPECIFIC TYPE DEFINEITION
-
 ```
 
 And here is the result:
