@@ -64,4 +64,10 @@ hid_t() : parent( H5Tcreate( H5T_OPAQUE, 10)) {
 }
 ```
 
+**Note on how 80bit is stored in 16bytes as opposed to 10 bytes:**
+From AMD64 ABI (attached)
+The long double type uses a 15 bit exponent, a 64-bit mantissa with an explicit high order significant bit and an exponent bias of 16383.3 Although a long double requires 16 bytes of storage, only the first 10 bytes are significant. The
+remaining six bytes are tail padding, and the contents of these bytes are undefined.
+
+
 best wishes: steve
