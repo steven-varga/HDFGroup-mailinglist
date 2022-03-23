@@ -1,0 +1,5 @@
+#ifndef  H5BENCH_H 
+#define  H5BENCH_H
+    #include "meta.hpp"
+    #include "h5bench.hpp"
+#endif
