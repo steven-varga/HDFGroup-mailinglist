@@ -6,7 +6,7 @@ to you, The HDF5 community member to ask for help/input on STL container usage i
 **Topic/Question**: `some_container_t<T,Ts...>(...)` recursively instantiated with `T={numeric_types}` and `Ts={some_container_t<T>}` may result in a massive set of containers, being useful only a few of them given a field say {physics, chemistry, biology, ...} . What are the useful combinations in your field?
 
 **Examples:**
-The following functional example represents a sparse matrix in [COO][1] format where data stored columnwise, which can be an intermediate step to persist `arma::spmat` or other popular **sparse** linear algebra constructs. This step is a necessary decomposition in order to persist arbitrary sparse matrix into multiple HDF5 datasets: 
+The following functional example represents a sparse matrix in [COO][1] format where data stored column wise, which can be an intermediate step to persist `arma::spmat` or other popular **sparse** linear algebra constructs. This step is a necessary decomposition in order to persist arbitrary sparse matrix into multiple HDF5 datasets: 
 ```c++
 // sparse matrix can be represented as 2 vectors of `coordinates` and a 
 // vector of `values` fast access by columns
@@ -46,7 +46,7 @@ Then compute some possible instantiations and automatically generate random test
 
 
 ```c++
-void full_cross_poduct(){
+void full_cross_product(){
 	constexpr size_t lower=4, upper=50, min=3, max=12;
     size_t num_tests = 0;
 
@@ -73,20 +73,21 @@ void full_cross_poduct(){
     std::cout<< std::setw(4) << num_tests << " tests has been performed"<<std::endl;
 }
 ```
-Computes a whoopping **1755** cases (all dataset correctly generated). 
+Computes a whopping **1755** cases! (all dataset correctly generated)
 
-# what kind of STL containers do you use in your field?
+# What kind of STL containers do you use in your field?
 
 
-If you find this topic iteresting, within the ballpark of your expertise please get in touch on this forum, or directly through my email.
+If you find this topic interesting, within the ballpark of your expertise please get in touch on this forum, or directly through my email.
 
 steven
 
-**ps.:** the functional compileable examples are on [this GitHUB page][2]
+**ps.:** the functional compilable examples are on [this GitHUB page][4]
 
 *Note:*
-The demonstrated data generators for arbitrary C++ dataype type will be the part of H5CPP distribution and is the missing piece of [h5rnd][3] project, a prufer sequence based random HDF5 dataset generator.
+The demonstrated data generators for arbitrary C++ datatype type will be the part of H5CPP distribution and is the missing piece of [h5rnd][3] project, a prufer sequence based random HDF5 dataset generator.
 
 [1]: https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)
 [2]: https://github.com/steven-varga/HDFGroup-mailinglist
 [3]: https://github.com/steven-varga/h5rnd
+[4]: https://github.com/steven-varga/HDFGroup-mailinglist/tree/master/tuple-2022-aprl-06

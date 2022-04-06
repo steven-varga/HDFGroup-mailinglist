@@ -38,7 +38,7 @@ template <class T> using stl_t = std::tuple<
 // cross product test between stl_t<element_t> x subset<element_t>
 // such that: stl_t<T> where T := {stl_t<element_t>, element_t}
 
-void full_cross_poduct(){
+void full_cross_product(){
 	constexpr size_t lower=4, upper=50, min=3, max=12;
     size_t num_tests = 0;
 
@@ -102,6 +102,6 @@ void tuple_example(){
 
 int main(int argc, char **argv) {
 	tuple_example();
-	full_cross_poduct();
+	full_cross_product();
 	return 0;
 }
