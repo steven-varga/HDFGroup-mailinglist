@@ -21,7 +21,6 @@ int main(int argc, char **argv) {
 
     { // code block will enforce RAII, as we need file closed to measure size
     h5::fd_t fd = h5::create(path, H5F_ACC_TRUNC);
-    std::vector<h5::gr_t> gr(N);
 
     h5::gr_t root{H5Gopen(fd, "/", H5P_DEFAULT)}; // using H5CPP RAII
     for(size_t n=0; n < N; n++)

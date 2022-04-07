@@ -10,13 +10,12 @@ copyright steven varga, 2022, apr 07, Toronto, ON, Canada;  MIT license
 
 int main(int argc, char **argv) {
     std::string path = "groups.h5";
-    size_t N = 100'000, strings_size=0;
+    size_t N = 600'000, strings_size=0;
     auto names = h5::utils::get_test_data<std::string>(N);
     for(auto a: names) strings_size+= a.size() * sizeof(std::string::value_type);
 
     { // code block will enforce RAII, as we need file closed to measure size
     h5::fd_t fd = h5::create(path, H5F_ACC_TRUNC);
-    std::vector<h5::gr_t> gr(N);
 
     h5::gr_t root{H5Gopen(fd, "/", H5P_DEFAULT)}; // using H5CPP RAII
     for(size_t n=0; n < N; n++)
