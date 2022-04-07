@@ -57,17 +57,18 @@ vector<vector<string>>:[[pkwZZ,lBqsR,cmKt,PDjaS,Zj],[Nr,jj,xe,uC,bixzV],[uBAU,pX
 array<vector<short>,N>:[[29,49,29,42,25,33,49,33,44,49],[50,48,35,22,35,33,33],[46,27,23,20,48,38,45,28,45],[25,33,41,22,36]]
 array<array<short,M>,N>:[[90,35,99],[47,58,53],[82,25,72],[76,92,62],[39,88,32]]
 
-
 MISC:
 ---------------------------------------------------------------------
-pair<int,string>:{10:nTIHxSfPCB}
-pair<string,vector<int>>:{LwTzsC:[4,6,4,6,5,2,8,4,5,8,4, ...]}
+            pair<int,string>:{4:upgdAdbvIB}
+    pair<string,vector<int>>:{qt:[5,8,7,4,7,8]}
+tuple<string,int,float,short>:<NHCmzhVVXJ,8,2.01756,7>
+tuple<string,list<int>,vector<float>,short>:<[FS,tZGxsmTM,CDedv,jRKbRB,DRBz,ianoRyw,ls,CvwzrYUgXg,OpeohtDJo,aAJgGirpH,dGcJvdt, ...],10,5.07478,[2,3,4,5,7,8,9,10]>
 ```
 
 ```c++
 /* copyright steven varga, vargaconsulting 2021, june 08, Toronto, ON, Canada;  MIT license
 */
-// must preceed <h5cpp/???> includes; usually placed in makefile with -DH5CPP_CONSOLE_WIDTH=20
+// must precede <h5cpp/???> includes; usually placed in makefile with -DH5CPP_CONSOLE_WIDTH=20
 #define H5CPP_CONSOLE_WIDTH 10
 
 #include <iostream>
@@ -131,9 +132,11 @@ int main(int argc, char **argv) {
 
     std::cout <<"\n\nMISC:\n";
     std::cout <<"---------------------------------------------------------------------\n";
-    //ragged arrays
-    std::cout <<"pair<int,string>:" << mock::data<pair<int,string>>::get(2, 10, 3, 30) <<"\n";
-    std::cout <<"pair<string,vector<int>>:" << mock::data<pair<string,vector<int>>>::get(2, 10, 3, 30) <<"\n";
+    //pair and tuple:
+    std::cout <<"            pair<int,string>:" << mock::data<pair<int,string>>::get(2, 10, 3, 30) <<"\n";
+    std::cout <<"    pair<string,vector<int>>:" << mock::data<pair<string,vector<int>>>::get(2, 10, 3, 30) <<"\n";
+    std::cout <<"tuple<string,int,float,short>:" << mock::data<tuple<string,int, float, short>>::get(2, 10, 3, 30) <<"\n";
+    std::cout <<"tuple<string,list<int>,vector<float>,short>:" << mock::data<tuple<list<string>,int, float, set<short>>>::get(2, 10, 3, 30) <<"\n";
 	return 0;
 }
 ```

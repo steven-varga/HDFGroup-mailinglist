@@ -64,8 +64,10 @@ int main(int argc, char **argv) {
 
     std::cout <<"\n\nMISC:\n";
     std::cout <<"---------------------------------------------------------------------\n";
-    //ragged arrays
-    std::cout <<"pair<int,string>:" << mock::data<pair<int,string>>::get(2, 10, 3, 30) <<"\n";
-    std::cout <<"pair<string,vector<int>>:" << mock::data<pair<string,vector<int>>>::get(2, 10, 3, 30) <<"\n";
+    //pair and tuple:
+    std::cout <<"            pair<int,string>:" << mock::data<pair<int,string>>::get(2, 10, 3, 30) <<"\n";
+    std::cout <<"    pair<string,vector<int>>:" << mock::data<pair<string,vector<int>>>::get(2, 10, 3, 30) <<"\n";
+    std::cout <<"tuple<string,int,float,short>:" << mock::data<tuple<string,int, float, short>>::get(2, 10, 3, 30) <<"\n";
+    std::cout <<"tuple<string,list<int>,vector<float>,short>:" << mock::data<tuple<list<string>,int, float, set<short>>>::get(2, 10, 3, 30) <<"\n";
 	return 0;
 }

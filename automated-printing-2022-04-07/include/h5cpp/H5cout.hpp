@@ -175,11 +175,30 @@ done:
     return os;
 }
 
+
+
 template <class K, class V> inline
 std::ostream& operator<<(std::ostream& os, const std::pair<K,V>& pair){
     os << "{" << pair.first <<":"<<pair.second <<"}";
     return os;
 }
+
+
+template <class tuple_t> inline
+typename std::enable_if<h5::meta::is_tuple<tuple_t>::value,
+std::ostream&>::type operator<<(std::ostream& os, const tuple_t& values){
+    constexpr size_t N = std::tuple_size<tuple_t>::value;
+    os << "<";
+    h5::meta::static_for<tuple_t>( [&]( auto i ){
+        using element_t = typename std::tuple_element<i,tuple_t>::type;
+        os << std::get<i>( values );
+        if (i < N - 1 ) os << ",";
+    });
+
+    os << ">";
+    return os;
+}
+
 
 template<class T>
 inline std::ostream& operator<<(std::ostream &os, const h5::dt_t<T>& dt) {
