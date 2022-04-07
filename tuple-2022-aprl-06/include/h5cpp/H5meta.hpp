@@ -47,6 +47,7 @@ namespace h5::meta {
     template <typename T> using top_f = decltype(std::declval<T>().top());
     template <typename T> using front_f = decltype(std::declval<T>().front());
     template <typename T> using back_f = decltype(std::declval<T>().back());
+    template <typename T> using empty_f = decltype(std::declval<T>().empty());
     // TODO:
     template <typename T> using resize_f = decltype(std::declval<T>().resize());
     template <typename T> using reserve_f = decltype(std::declval<T>().reserve());
@@ -70,6 +71,7 @@ namespace h5::meta {
     template <typename T> using has_top = compat::is_detected<top_f, T>;
     template <typename T> using has_front = compat::is_detected<front_f, T>;
     template <typename T> using has_back = compat::is_detected<back_f, T>;
+    template <typename T> using has_empty = compat::is_detected<empty_f, T>;
 
     template <typename T> using has_resize = compat::is_detected<resize_f, T>;
     template <typename T> using has_reserve = compat::is_detected<reserve_f, T>;

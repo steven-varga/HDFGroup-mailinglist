@@ -112,7 +112,6 @@ std::ostream& operator<<(std::ostream &os, const h5::sp_t& sp) {
     return os;
 }
 
-
 template <class T> inline
 typename std::enable_if<!h5::meta::is_string<T>::value && h5::meta::has_iterator<T>::value, std::ostream&>::type
 operator<<(std::ostream& os, const T& container){
@@ -132,24 +131,74 @@ operator<<(std::ostream& os, const T& container){
 template <class T> inline
 typename std::enable_if<
     !h5::meta::is_string<T>::value && 
-    h5::meta::has_top<T>::value && h5::meta::has_pop<T>::value && h5::meta::has_size<T>::value, 
+    h5::meta::has_top<T>::value && h5::meta::has_pop<T>::value && h5::meta::has_empty<T>::value, 
     std::ostream&>::type
 operator<<(std::ostream& os, const T& container_){
-    T container = container_;
+    T container = container_; // make a copy, which we destroy later
     size_t i=0;
     os << "[";
-    if(container.size() == 0) 
+    if(container.empty()) 
         goto done;
     os << container.top();
-    while(container.size() != 0 && i++ < H5CPP_CONSOLE_WIDTH){
-        container.pop();
+    container.pop();
+    while(!container.empty() && i++ < H5CPP_CONSOLE_WIDTH ){
         os << "," << container.top();
+        container.pop();
     }
     if( i >= H5CPP_CONSOLE_WIDTH ) os <<", ...";
 done: 
     os << "]";
     return os;
 }
+
+// queues and alike
+template <class T> inline
+typename std::enable_if<
+    !h5::meta::is_string<T>::value && 
+    h5::meta::has_front<T>::value && h5::meta::has_pop<T>::value && h5::meta::has_empty<T>::value, 
+    std::ostream&>::type
+operator<<(std::ostream& os, const T& container_){
+    T container = container_; // make a copy, which we destroy later
+    size_t i=0;
+    os << "[";
+    if(container.empty()) 
+        goto done;
+    os << container.front();
+    container.pop();
+    while(!container.empty() && i++ < H5CPP_CONSOLE_WIDTH){
+        os << "," << container.front();
+        container.pop();
+    }
+    if( i >= H5CPP_CONSOLE_WIDTH ) os <<", ...";
+done: 
+    os << "]";
+    return os;
+}
+
+
+
+template <class K, class V> inline
+std::ostream& operator<<(std::ostream& os, const std::pair<K,V>& pair){
+    os << "{" << pair.first <<":"<<pair.second <<"}";
+    return os;
+}
+
+
+template <class tuple_t> inline
+typename std::enable_if<h5::meta::is_tuple<tuple_t>::value,
+std::ostream&>::type operator<<(std::ostream& os, const tuple_t& values){
+    constexpr size_t N = std::tuple_size<tuple_t>::value;
+    os << "<";
+    h5::meta::static_for<tuple_t>( [&]( auto i ){
+        using element_t = typename std::tuple_element<i,tuple_t>::type;
+        os << std::get<i>( values );
+        if (i < N - 1 ) os << ",";
+    });
+
+    os << ">";
+    return os;
+}
+
 
 template<class T>
 inline std::ostream& operator<<(std::ostream &os, const h5::dt_t<T>& dt) {
