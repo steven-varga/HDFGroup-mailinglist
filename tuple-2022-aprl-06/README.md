@@ -73,7 +73,59 @@ void full_cross_product(){
     std::cout<< std::setw(4) << num_tests << " tests has been performed"<<std::endl;
 }
 ```
-Computes a whopping **1755** cases! (all dataset correctly generated)
+Computes a whopping **1755** cases! (all dataset correctly generated) The next examples generate associated containers
+
+```c++
+void string_map(){
+    constexpr size_t lower=2, upper=10, min=5, max=5;      
+    //                         key             values
+    using map_t =  std::map<std::string, std::vector<std::string>>;
+
+    // request random sample data from H5CPP utils:
+    map_t map = h5::utils::data<map_t>::get(lower, upper, min, max);
+    for (const auto &p : map)
+        std::cout << p.first << "=>" << p.second << '\n';
+    std::cout <<"\n\n";
+}
+
+void int_unordered_map(){
+    constexpr size_t lower=2, upper=10, min=5, max=5;      
+    //                         key             values
+    using map_t =  std::unordered_map<int, std::vector<double>>;
+
+    // request random sample data from H5CPP utils:
+    map_t map = h5::utils::data<map_t>::get(lower, upper, min, max);
+    for (const auto &p : map)
+        std::cout << p.first << "=>" << p.second << '\n';
+    std::cout <<"\n\n";
+}
+
+```
+
+Expected result:
+```
+g++ -I./include -o tuple-test.o   -std=c++17 -DFMT_HEADER_ONLY -c tuple-test.cpp
+g++ tuple-test.o -lhdf5  -lz -ldl -lm  -o tuple-test
+./tuple-test
+[ sparse matrix with: 50 x 48  ]
+     x:[11,40,50,28,30]
+     y:[48,28,8,37,21]
+values:[33.6047,26.3818,16.6548,23.1324,44.084]
+1755 tests has been performed
+
+AErL=>[kdTFO,ZWAFxpbgXk,ZTw,QhAC,oyqcsX]
+BuS=>[JNsbr,ZxNTmwTCi,ti,xTisqNnQY,lqvSOdDeO]
+XzsbVgEluZ=>[DkVtWhSujh,QG,ESujw,PuHVLYh,SVmQm]
+qlo=>[GqQWq,xNlh,yUrsdj,OmtiYEOs,TY]
+xvfcS=>[SNGXhCYWfy,aD,btoox,tcqCCHwmXB,tySIML]
+
+
+5=>[6.99629,7.93517,4.91782,2.0825,7.36592]
+2=>[7.34483,5.90255,7.77281,8.19388,6.95707]
+6=>[6.62439,2.78461,5.73858,3.45465,2.11209]
+8=>[2.74198,5.66705,3.01571,8.19023,4.43414]
+```
+
 
 # What kind of STL containers do you use in your field?
 

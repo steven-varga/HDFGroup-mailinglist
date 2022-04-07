@@ -6,6 +6,8 @@
 #define  H5CPP_STD_COUT
 
 #include <hdf5.h>
+#include "H5meta.hpp"
+#include "H5Tmeta.hpp"
 #include "H5config.hpp"
 #include "H5Eall.hpp"
 #include "H5Iall.hpp"
@@ -110,20 +112,44 @@ std::ostream& operator<<(std::ostream &os, const h5::sp_t& sp) {
     return os;
 }
 
+
 template <class T> inline
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec){
+typename std::enable_if<!h5::meta::is_string<T>::value && h5::meta::has_iterator<T>::value, std::ostream&>::type
+operator<<(std::ostream& os, const T& container){
     os << "[";
-    if(vec.size() < H5CPP_CONSOLE_WIDTH ){
-        int i=0;
-        for(; i<vec.size()-1; i++ ) os << vec[i] <<",";
-        os << vec[i];
-    }else{
-        os << ".. fix me ..";
-    }
+    auto it = std::begin(container);
+    auto last = std::end(container);
+    size_t i=0;
+    os << *it;
+    while(++it != last && i++ < H5CPP_CONSOLE_WIDTH) 
+        os << "," << *it;
+    if( i >= H5CPP_CONSOLE_WIDTH ) os <<", ...";
     os << "]";
-return os;
+    return os;
 }
 
+// stacks and alike
+template <class T> inline
+typename std::enable_if<
+    !h5::meta::is_string<T>::value && 
+    h5::meta::has_top<T>::value && h5::meta::has_pop<T>::value && h5::meta::has_size<T>::value, 
+    std::ostream&>::type
+operator<<(std::ostream& os, const T& container_){
+    T container = container_;
+    size_t i=0;
+    os << "[";
+    if(container.size() == 0) 
+        goto done;
+    os << container.top();
+    while(container.size() != 0 && i++ < H5CPP_CONSOLE_WIDTH){
+        container.pop();
+        os << "," << container.top();
+    }
+    if( i >= H5CPP_CONSOLE_WIDTH ) os <<", ...";
+done: 
+    os << "]";
+    return os;
+}
 
 template<class T>
 inline std::ostream& operator<<(std::ostream &os, const h5::dt_t<T>& dt) {

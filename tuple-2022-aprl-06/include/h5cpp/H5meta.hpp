@@ -43,6 +43,10 @@ namespace h5::meta {
     template <typename T> using end_f = decltype(std::declval<T>().end());
     template <typename T> using cbegin_f = decltype(std::declval<T>().cbegin());
     template <typename T> using cend_f = decltype(std::declval<T>().cend());
+    template <typename T> using pop_f = decltype(std::declval<T>().pop());
+    template <typename T> using top_f = decltype(std::declval<T>().top());
+    template <typename T> using front_f = decltype(std::declval<T>().front());
+    template <typename T> using back_f = decltype(std::declval<T>().back());
     // TODO:
     template <typename T> using resize_f = decltype(std::declval<T>().resize());
     template <typename T> using reserve_f = decltype(std::declval<T>().reserve());
@@ -61,6 +65,11 @@ namespace h5::meta {
     template <typename T> using has_end = compat::is_detected<end_f, T>;
     template <typename T> using has_cbegin = compat::is_detected<cbegin_f, T>;
     template <typename T> using has_cend = compat::is_detected<cend_f, T>;
+
+    template <typename T> using has_pop = compat::is_detected<pop_f, T>;
+    template <typename T> using has_top = compat::is_detected<top_f, T>;
+    template <typename T> using has_front = compat::is_detected<front_f, T>;
+    template <typename T> using has_back = compat::is_detected<back_f, T>;
 
     template <typename T> using has_resize = compat::is_detected<resize_f, T>;
     template <typename T> using has_reserve = compat::is_detected<reserve_f, T>;

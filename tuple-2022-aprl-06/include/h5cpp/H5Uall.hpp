@@ -35,6 +35,22 @@ namespace h5::utils::string {
         constexpr static char32_t value [] = 
             U"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     };
+
+    template<class T>
+    std::basic_string<T> random(size_t min, size_t max, size_t a=0, size_t b=0){
+        constexpr auto alphabet = literal<T>::value;
+        std::random_device rd;
+        std::default_random_engine rng(rd());
+        std::uniform_int_distribution<> dist(0,strlen(alphabet)-1);
+        std::uniform_int_distribution<> string_length(min,max);
+        std::basic_string<T> str;
+        size_t N = string_length(rng);
+        str.reserve(N);
+        std::generate_n(std::back_inserter(str), N, [&]() {
+            return alphabet[dist(rng)];
+        });
+        return str;
+    };
 }
 
 namespace h5::utils { // SCALARS
@@ -74,17 +90,23 @@ namespace h5::utils { // SCALARS
             if constexpr (meta::has_reserve<T>::value) {
                 container.reserve(N);
             }
-            
-            if constexpr (meta::has_emplace_back<T>::value)
+
+            if constexpr (std::is_same<T, std::string>::value) {
+                container = string::random<char>(l,u, min, max);
+            } else if constexpr (meta::has_emplace_back<T>::value)
                 for(size_t i=0; i<N; i++) // std::vector<>, std::deque<>, std::list<>
-                    container.emplace_back(utils::data<element_t>::get(l,u));
+                    container.emplace_back(utils::data<element_t>::get(l,u, min,max));
             else if constexpr(meta::has_emplace_front<T>::value)
                 for(size_t i=0; i<N; i++) // std::forward_list<>
-                    container.emplace_front(utils::data<element_t>::get(l,u));
-            else if constexpr(meta::has_emplace<T>::value)
-                for(size_t i=0; i<N; i++) // std::stack<>, std::queue<>, std::priority_queue<>
-                    container.emplace(utils::data<element_t>::get(l,u));
-            else if constexpr(meta::is_tuple<T>::value){
+                    container.emplace_front(utils::data<element_t>::get(l,u, min,max));
+            else if constexpr(meta::has_emplace<T>::value){
+                // std::stack<>, std::queue<>, std::priority_queue<>, 
+                // std::map<>, std::unordered_map<>
+                for(size_t i=0; i<N; i++){ 
+                    element_t value = utils::data<element_t>::get(l,u, min, max);
+                    container.emplace(value);
+                }
+            } else if constexpr(meta::is_tuple<T>::value){
                 using tuple_t = T;
                 meta::static_for<tuple_t>( [&]( auto i ){
                 using element_t = typename std::tuple_element<i,tuple_t>::type;
@@ -99,18 +121,21 @@ namespace h5::utils { // SCALARS
     struct data <std::pair<K,V>>{
         // K is scalar, V = {scalar, rank 1}
         static std::pair<K,V> get(size_t l, size_t u, size_t min=5, size_t max=10) {
-            K key = data<K>::get(l,u, min,max);
-            V value = data<V>::get(l,u, min, max);
+            using key_t = typename std::remove_cv<K>::type;
+            using value_t = typename std::remove_cv<V>::type;
+            K key = data<key_t>::get(l,u, min,max);
+            V value = data<value_t>::get(l,u, min, max);
             return std::make_pair(key,value);
         }
     };
 
-    template <class T, size_t N> 
-    struct data <std::array<T,N>>{
-        static std::array<T,N> get(size_t l, size_t u, size_t min=5, size_t max=10) {
-            std::array<T,N> data;
+    template <class V, size_t N> 
+    struct data <std::array<V,N>>{
+        static std::array<V,N> get(size_t l, size_t u, size_t min=5, size_t max=10) {
+            using value_t = typename std::remove_cv<V>::type;
+            std::array<value_t,N> data;
             std::generate_n(data.begin(), N, [&]() {
-                return h5::utils::data<T>::get(l,u);
+                return h5::utils::data<value_t>::get(l,u);
             });
             return data;
         }
@@ -118,7 +143,7 @@ namespace h5::utils { // SCALARS
     template <> struct data <bool>{
         /** @ingroup utils
         * @brief returns random true | false drawn from bernaulli distribution 
-        * considering the domain of `T` dataype the routine draws a value from paramterized bernaulli distribution(nom/denom),
+        * considering the domain of `T` dataype the routine draws a value from parametrized bernaulli distribution(nom/denom),
         * with the probability of `true` given by nom/denom ratio .
         * @param nom nominator
         * @param denom denominator
@@ -151,31 +176,6 @@ namespace h5::utils { // SCALARS
             std::default_random_engine rng(rd());
             dist_t dist(min, max);
             return dist(rng);
-        }
-    };
-    template <class T> struct data <std::basic_string<T>>{
-        /** @ingroup utils
-        * @brief returns random std::string<T> drawn from uniform distribution [A-Za-z] with length between **min** and **max**
-        * @param min lower bound on the length
-        * @param max upper bound on the length
-        * @tparam T `char | wchar_t | char16_t | char32_t`
-        * @code
-        * std::string str = h5::utils::data<std::string>::get(10, 20);
-        * @endcode  
-        */
-        static std::basic_string<T> get(size_t min, size_t max, size_t a=0, size_t b=0) {
-            constexpr auto alphabet = h5::utils::string::literal<T>::value;
-            std::random_device rd;
-            std::default_random_engine rng(rd());
-            std::uniform_int_distribution<> dist(0,strlen(alphabet)-1);
-            std::uniform_int_distribution<> string_length(min,max);
-            std::basic_string<T> str;
-            size_t N = string_length(rng);
-            str.reserve(N);
-            std::generate_n(std::back_inserter(str), N, [&]() {
-                return alphabet[dist(rng)];
-            });
-            return str;
         }
     };
 }

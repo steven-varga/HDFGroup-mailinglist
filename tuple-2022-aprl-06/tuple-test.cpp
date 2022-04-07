@@ -1,11 +1,13 @@
 /* copyright steven varga, vargaconsulting 2021, june 08, Toronto, ON, Canada;  MIT license
 */
-
+#include <iostream>
 #include <h5cpp/H5Uall.hpp>
 #include <h5cpp/H5cout.hpp>
 #include <utils/types.hpp>
-#include <string>
 #include <vector>
+#include <string>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -34,7 +36,6 @@ template <class T> using stl_t = std::tuple<
     std::queue<T, std::deque<T>>, std::queue<T, std::list<T>>,
     std::priority_queue<T, std::deque<T>>, std::priority_queue<T, std::vector<T>>
 	>;
-
 // cross product test between stl_t<element_t> x subset<element_t>
 // such that: stl_t<T> where T := {stl_t<element_t>, element_t}
 
@@ -62,7 +63,7 @@ void full_cross_product(){
             }); // Tz container<A> x container<B>
         }); // Ty container x element_t 
     }); // Tx element_t
-    std::cout<< std::setw(4) << num_tests << " tests has been performed";
+    std::cout<< std::setw(4) << num_tests << " tests has been performed\n\n";
 }
 
 
@@ -97,11 +98,47 @@ void tuple_example(){
 			std::cout <<"values:"<< std::get<2>(sparse_matrix) << std::endl;
 		}
     });
+    std::cout <<"\n\n";
+}
+
+void int_unordered_map(){
+    std::cout<<"\tstd::unordered_map<int, std::vector<double>>\n";
+    constexpr size_t lower=2, upper=10, min=5, max=5;      
+    //                         key             values
+    using map_t =  std::unordered_map<int, std::vector<double>>;
+
+    // request random sample data from H5CPP utils:
+    map_t map = h5::utils::data<map_t>::get(lower, upper, min, max);
+    for (const auto &p : map)
+        std::cout << p.first << "=>" << p.second << '\n';
+    std::cout <<"\n\n";
+}
+
+void string_map(){
+    std::cout<<"\tstd::map<std::string, std::vector<std::string>>\n";
+    constexpr size_t lower=2, upper=10, min=5, max=5;      
+    //                         key             values
+    using map_t =  std::map<std::string, std::vector<std::string>>;
+
+    // request random sample data from H5CPP utils:
+    map_t map = h5::utils::data<map_t>::get(lower, upper, min, max);
+    for (const auto &p : map)
+        std::cout << p.first << "=>" << p.second << '\n';
+    std::cout <<"\n\n";
 }
 
 
+
+
 int main(int argc, char **argv) {
+    namespace mock = h5::utils;
+    using namespace std;
+    constexpr size_t lower=2, upper=3, min=5, max=5;      
+
 	tuple_example();
 	full_cross_product();
+    string_map();
+    int_unordered_map();
+    
 	return 0;
 }
