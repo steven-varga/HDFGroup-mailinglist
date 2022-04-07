@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     std::cout <<" queue<T,deque<T>>:" << mock::data<queue<string, deque<string>>>::get(3,5, min, max);
     std::cout <<"  queue<T,list<T>>:" << mock::data<queue<string, list<string>>>::get(2,7, min, max);
 
-    std::cout<< "\n\nASSOCIATE CONSTAINERS:\n";
+    std::cout<< "\n\nASSOCIATE CONTAINERS:\n";
     std::cout <<"---------------------------------------------------------------------\n";
     std::cout <<"                    map<string,int>:" << mock::data<map<string,int>>::get(1, 3, min, max)<<"\n";
     std::cout <<"            map<short,list<string>>:" << mock::data<map<string,int>>::get(5, 8, min, max)<<"\n";

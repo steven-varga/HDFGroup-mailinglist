@@ -1,4 +1,4 @@
-# Automated display of STL like containers
+# [Automated formatted display of STL like containers][5]
 
 Debugging C++ is an art and may require elaborated setup of [`valgrind`][1], `cachegrind`, [gdb][2] or other specialized tools, to avoid this overhead why not just print on the screen?
 
@@ -41,7 +41,7 @@ stack<T,vector<T>>:[172,252,181,11]
     priority_queue:[zdbUzd,tTknDw,qorxgk,mCcEay,gDeJ,FYPOEd,CIhMU]
  queue<T,deque<T>>:[bVG,Bbs,vchuT,FfxEw,CXFrr,JAx,sVlcI]  queue<T,list<T>>:[ARPl,dddmHT,mEiCJ,OVEYS,FIJi,jbQwb,tpJnpj,rlCRoKn,nBKjJ,KPlU,jatsUI, ...]
 
-ASSOCIATE CONSTAINERS:
+ASSOCIATE CONTAINERS:
 ---------------------------------------------------------------------
                     map<string,int>:[{LID:2},{U:2},{Xr:1},{e:2},{esU:1},{kbj:1},{qFc:3}]
             map<short,list<string>>:[{LjwUkey:5},{jZxhk:6},{sxKKVu:8},{vSmHmu:8},{wRBTdGS:7}]
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
     std::cout <<" queue<T,deque<T>>:" << mock::data<queue<string, deque<string>>>::get(3,5, min, max);
     std::cout <<"  queue<T,list<T>>:" << mock::data<queue<string, list<string>>>::get(2,7, min, max);
 
-    std::cout<< "\n\nASSOCIATE CONSTAINERS:\n";
+    std::cout<< "\n\nASSOCIATE CONTAINERS:\n";
     std::cout <<"---------------------------------------------------------------------\n";
     std::cout <<"                    map<string,int>:" << mock::data<map<string,int>>::get(1, 3, min, max)<<"\n";
     std::cout <<"            map<short,list<string>>:" << mock::data<map<string,int>>::get(5, 8, min, max)<<"\n";
@@ -137,12 +137,16 @@ int main(int argc, char **argv) {
 }
 ```
 
-
+Source code may be downloaded from this [GitHUB page][5], if you are interested in the topic, feel free to leave comments on this thread.  
 
 *Note:*
 The demonstrated data generators for arbitrary C++ datatype type will be the part of H5CPP distribution and is the missing piece of [h5rnd][3] project, a prufer sequence based random HDF5 dataset generator.
 
+steve
+
+
 [1]: https://valgrind.org/
 [2]: https://www.sourceware.org/gdb/
 [3]: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4436.pdf
-[4]:
+[4]: https://github.com/steven-varga/HDFGroup-mailinglist/tree/master/tuple-2022-aprl-06
+[5]: https://github.com/steven-varga/HDFGroup-mailinglist/tree/master/automated-printing-2022-04-07
