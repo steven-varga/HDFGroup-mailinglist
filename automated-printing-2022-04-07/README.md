@@ -39,7 +39,8 @@ stack<T,vector<T>>:[172,252,181,11]
  stack<T,deque<T>>:[54,278,66,70,230,44,121,15,58,149,224, ...]
   stack<T,list<T>>:[251,82,278,86,66,40,278,45,211,225,271, ...]
     priority_queue:[zdbUzd,tTknDw,qorxgk,mCcEay,gDeJ,FYPOEd,CIhMU]
- queue<T,deque<T>>:[bVG,Bbs,vchuT,FfxEw,CXFrr,JAx,sVlcI]  queue<T,list<T>>:[ARPl,dddmHT,mEiCJ,OVEYS,FIJi,jbQwb,tpJnpj,rlCRoKn,nBKjJ,KPlU,jatsUI, ...]
+ queue<T,deque<T>>:[bVG,Bbs,vchuT,FfxEw,CXFrr,JAx,sVlcI]  
+  queue<T,list<T>>:[ARPl,dddmHT,mEiCJ,OVEYS,FIJi,jbQwb,tpJnpj,rlCRoKn,nBKjJ,KPlU,jatsUI, ...]
 
 ASSOCIATE CONTAINERS:
 ---------------------------------------------------------------------
@@ -109,8 +110,8 @@ int main(int argc, char **argv) {
     std::cout <<" stack<T,deque<T>>:" << mock::data<stack<int,deque<int>>>::get(0, 300, min, 300) <<"\n";
     std::cout <<"  stack<T,list<T>>:" << mock::data<stack<int,list<int>>>::get(0, 300, min, max) <<"\n";
     std::cout <<"    priority_queue:" << mock::data<priority_queue<string>>::get(4, 6, min, max) <<"\n";
-    std::cout <<" queue<T,deque<T>>:" << mock::data<queue<string, deque<string>>>::get(3,5, min, max);
-    std::cout <<"  queue<T,list<T>>:" << mock::data<queue<string, list<string>>>::get(2,7, min, max);
+    std::cout <<" queue<T,deque<T>>:" << mock::data<queue<string, deque<string>>>::get(3,5, min, max) <<"\n";
+    std::cout <<"  queue<T,list<T>>:" << mock::data<queue<string, list<string>>>::get(2,7, min, max) <<"\n";
 
     std::cout<< "\n\nASSOCIATE CONTAINERS:\n";
     std::cout <<"---------------------------------------------------------------------\n";

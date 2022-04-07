@@ -43,8 +43,8 @@ int main(int argc, char **argv) {
     std::cout <<" stack<T,deque<T>>:" << mock::data<stack<int,deque<int>>>::get(0, 300, min, 300) <<"\n";
     std::cout <<"  stack<T,list<T>>:" << mock::data<stack<int,list<int>>>::get(0, 300, min, max) <<"\n";
     std::cout <<"    priority_queue:" << mock::data<priority_queue<string>>::get(4, 6, min, max) <<"\n";
-    std::cout <<" queue<T,deque<T>>:" << mock::data<queue<string, deque<string>>>::get(3,5, min, max);
-    std::cout <<"  queue<T,list<T>>:" << mock::data<queue<string, list<string>>>::get(2,7, min, max);
+    std::cout <<" queue<T,deque<T>>:" << mock::data<queue<string, deque<string>>>::get(3,5, min, max)<<"\n";
+    std::cout <<"  queue<T,list<T>>:" << mock::data<queue<string, list<string>>>::get(2,7, min, max)<<"\n";
 
     std::cout<< "\n\nASSOCIATE CONTAINERS:\n";
     std::cout <<"---------------------------------------------------------------------\n";
