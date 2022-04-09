@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2019 vargaconsulting, Toronto,ON Canada
+ * Author: Varga, Steven <steven@vargaconsulting.ca>
+ */
+
+#ifndef  PLOT_ALL_HPP
+#define  PLOT_ALL_HPP
+
+#include "tags.hpp"
+#include "meta.hpp"
+#include "attributes.hpp"
+#include "canvas.hpp"
+#include "utils.hpp"
+#include "text.hpp"
+#include "axis.hpp"
+#include "heatmap.hpp"
+
+#endif

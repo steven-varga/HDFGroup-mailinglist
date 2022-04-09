@@ -5,10 +5,10 @@
 CXX=g++-10
 CXXFLAGS =  -std=c++20
 LIBS =  -lhdf5  -lz -ldl -lm -lpthread
-INCLUDES = -I/usr/local/include -I/usr/include -I./
+INCLUDES = -I./include 
 
 test: threads
-	./threads
+	#./threads
 
 threads.o : threads.cpp queue.hpp utils.hpp
 	$(CXX) $(INCLUDES) -o threads.o  $(CXXFLAGS) -c threads.cpp

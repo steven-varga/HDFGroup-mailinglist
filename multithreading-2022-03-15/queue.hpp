@@ -2,7 +2,6 @@
 #ifndef H5CPP_QUEUE
 #define H5CPP_QUEUE
 
-#include <h5cpp/all>
 #include <deque>
 #include <thread>
 #include <mutex>

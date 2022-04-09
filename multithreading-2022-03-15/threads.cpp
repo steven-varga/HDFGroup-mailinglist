@@ -1,17 +1,36 @@
 /* Copyright (c) 2022 vargaconsulting, Toronto,ON Canada */
 
+#include <h5cpp/all>
+#include <h5cpp/H5Uall.hpp>
+#include <h5cpp/H5cout.hpp>
+#include <utils/types.hpp>
+#include <benchmark/all>
+
 #include <thread>
 #include "queue.hpp"
 #include "utils.hpp"
 
-constexpr int dataset_name_min=5;
-constexpr int dataset_name_max=21;
-constexpr int dataset_size=40000;
+namespace bh = h5::bench;
+
 constexpr int number_of_threads=60;
+
+constexpr int dataset_name_min=5;     //dataset random name
+constexpr int dataset_name_max=21;
+constexpr int dataset_size_min=40000; // dataset size control
+constexpr int dataset_size_max=80000;
+// value control, currently restricted to be `size_t` type (work in progress)
+constexpr size_t value_lower_bound=0, value_upper_bound=123;
+
+
+// BECNCHMARKING SETUP: TBD
+
+
+// H5CPP nextgen IO pipeline may not have all data types available 
+using payload_t = std::vector<double>;
 
 struct task_t {
 	std::string name;
-	std::vector<double> data;
+	payload_t data;
 };
 
 int main(){
@@ -32,8 +51,9 @@ int main(){
 
 	for(auto& current_thread: pool) 
 		current_thread = std::jthread([&]{
-			auto payload = h5::utils::get_test_data<double>(dataset_size);
-			std::string path = h5::utils::get_random_string(dataset_name_min, dataset_name_max);
+			payload_t payload = h5::utils::data<payload_t>::get(
+				dataset_size_min, dataset_size_max, dataset_size_min, dataset_size_max);
+			std::string path = h5::utils::data<std::string>::get(dataset_name_min, dataset_name_max);
 			io.push(
 				task_t{path, payload});
 		});
