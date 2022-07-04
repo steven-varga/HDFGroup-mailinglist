@@ -7,8 +7,11 @@
 #include <unistd.h>
 #include <assert.h>
 #include <h5cpp/all>
+#include <tuple>
+#include <chrono>
 
 int main() {
+	namespace clock = std::chrono;
 
 	h5::fd_t fd = h5::create("collected-data.h5", H5F_ACC_TRUNC);
     void *ctx = zmq_ctx_new ();
@@ -20,10 +23,19 @@ int main() {
 	h5::pt_t pt = h5::create<int64_t>(fd, "some channel xyz",
 			h5::max_dims{H5S_UNLIMITED}, h5::chunk{1024});
 
-	int64_t buffer, count=100;
-	while(count--)
-        if( zmq_recv (sock, &buffer, sizeof(int64_t), 0) >= 0)
-			h5::append( pt, buffer);
-
-	return 0;
+	int64_t buffer = 1,  event_count = 0;
+                  
+	clock::steady_clock::time_point start;
+	while(buffer != 0)
+        if( zmq_recv (sock, &buffer, sizeof(int64_t), 0) >= 0){
+			h5::append(pt, buffer);
+			if(event_count == 0)
+				start = clock::steady_clock::now();
+			event_count ++;
+		}
+	const auto stop = clock::steady_clock::now();
+	const auto delta = static_cast<double>(
+		clock::duration_cast<clock::nanoseconds>(stop - start).count()) / 1'000.0d;
+	
+	std::cout << event_count / delta * 1e3 << " events/sec" << std::endl;
 }

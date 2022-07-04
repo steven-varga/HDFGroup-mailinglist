@@ -13,3 +13,6 @@ mkdir build && cd build
 cmake -DBUILD_DOCS=OFF ../
 sudo make install
 ```
+
+#python
+`python3 -m pip install`

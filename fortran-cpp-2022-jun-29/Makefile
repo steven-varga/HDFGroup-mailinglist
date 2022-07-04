@@ -7,9 +7,13 @@
 
 CXXFLAGS =  -std=c++17
 INCLUDES = -I/usr/local/include -I./include
+LIB = -L/usr/local/lib/
 
-send: send.f90
-	gfortran-11 -Wall $(INCLUDES) -L/usr/local/lib/ -o send send.f90 -lfzmq -lzmq
+send-f90: send.f90
+	$(FC)  -Wall $(INCLUDES) $(LIB) -o send-f90 send.f90 -lfzmq -lzmq
+
+send-cpp: send.cpp
+	$(CXX)  -Wall $(INCLUDES) $(LIB) -o send-cpp send.cpp -lzmq
 
 recv: recv.cpp
 	$(CXX) $(INCLUDES) -o recv  $(CXXFLAGS) recv.cpp -lfzmq -lzmq -lhdf5 -lz -ldl -lm 
